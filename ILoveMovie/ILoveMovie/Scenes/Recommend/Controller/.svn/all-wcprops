@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/bingbing/!svn/ver/99/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller
+END
+CommentTableViewController.h
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/bingbing/!svn/ver/1/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller/CommentTableViewController.h
+END
+ERMovieSetVC.h
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/bingbing/!svn/ver/12/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller/ERMovieSetVC.h
+END
+CategoryViewController.h
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/bingbing/!svn/ver/1/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller/CategoryViewController.h
+END
+ERCommentViewController.m
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/bingbing/!svn/ver/19/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller/ERCommentViewController.m
+END
+MovieRecommendViewController.m
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/bingbing/!svn/ver/102/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller/MovieRecommendViewController.m
+END
+CommentTableViewController.m
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/bingbing/!svn/ver/79/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller/CommentTableViewController.m
+END
+ERMovieSetVC.m
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/bingbing/!svn/ver/99/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller/ERMovieSetVC.m
+END
+CategoryViewController.m
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/bingbing/!svn/ver/102/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller/CategoryViewController.m
+END
+MovieSetTableViewController.h
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/bingbing/!svn/ver/1/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller/MovieSetTableViewController.h
+END
+RecommendVC.h
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/bingbing/!svn/ver/1/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller/RecommendVC.h
+END
+MovieSetTableViewController.m
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/bingbing/!svn/ver/99/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller/MovieSetTableViewController.m
+END
+RecommendVC.m
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/bingbing/!svn/ver/98/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller/RecommendVC.m
+END
+MovieRecommendViewController.h
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/bingbing/!svn/ver/1/ILoveMovie/ILoveMovie/Scenes/Recommend/Controller/MovieRecommendViewController.h
+END

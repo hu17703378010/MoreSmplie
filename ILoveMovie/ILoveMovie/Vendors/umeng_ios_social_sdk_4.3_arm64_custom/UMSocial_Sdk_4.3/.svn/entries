@@ -1,0 +1,77 @@
+10
+
+dir
+101
+http://graveyards@www.svnchina.com/svn/bingbing/ILoveMovie/ILoveMovie/Vendors/umeng_ios_social_sdk_4.3_arm64_custom/UMSocial_Sdk_4.3
+http://graveyards@www.svnchina.com/svn/bingbing
+
+
+
+2015-11-05T13:24:45.799423Z
+51
+LinbingLi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5287fd08-1059-4cd1-a848-d8c4f43c34d6
+
+SocialSDKXib
+dir
+
+en.lproj
+dir
+
+libUMSocial_Sdk_4.3.a
+file
+
+
+
+
+2015-11-05T13:24:45.000000Z
+296b9395d92e6bb0ae6f2aa56a1c188e
+2015-11-05T13:24:45.799423Z
+51
+LinbingLi
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+9520544
+
+Header
+dir
+
+UMSocialSDKResourcesNew.bundle
+dir
+
+zh-Hans.lproj
+dir
+

@@ -1,0 +1,61 @@
+//
+//  ILoveMoviesPrefixHeader.pch
+//  ILoveMovies(爱尚电影)
+//
+//  Created by lanou3g on 15/10/27.
+//  Copyright © 2015年 lanou3g. All rights reserved.
+//
+
+#ifndef ILoveMoviesPrefixHeader_pch
+#define ILoveMoviesPrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#import "MineViewController.h"
+#import "EnjoyVC.h"
+#import "ImageExplainVC.h"
+#import "RecommendVC.h"
+#import "UIImageView+WebCache.h"
+#import "UIView+WLFrame.h"
+#import <AVOSCloud/AVOSCloud.h>
+
+
+#pragma mark -- 图解电影接口
+
+#define kScreenWidth [UIScreen mainScreen].bounds.size.width
+#define kScreenHeight [UIScreen mainScreen].bounds.size.height
+
+#define KW self.view.frame.size.width/375
+#define KH self.view.frame.size.height/667
+
+// 热映接口
+#define kHotUrl @"http://sfzdy.yingyongjingling.com:20610/v3/video/index?phoneNumber=&versionCode=17&clientType=ANDROID&versionName=1.1.0"
+
+
+// 专题接口
+#define kTopUrl @"http://sfzdy.yingyongjingling.com:20610/video/topic/list?pageSize=100&versionCode=17&versionName=1.1.0&pageNo=1&clientType=ANDROID"
+
+
+// 登录
+#import "LoginViewController.h"
+
+// 加载时的等待小菊花
+#import "SVIndefiniteAnimatedView.h"
+#import "SVProgressHUD.h"
+#import "SVRadialGradientLayer.h"
+// #import "SVProgressHUD-Prefix.pch"
+
+#define kFindListCellLabelTextColor [UIColor colorWithRed:0.8 green:0.247 blue:0.314 alpha:0.580]
+
+#import <AFNetworking.h>
+
+
+#endif /* ILoveMoviesPrefixHeader_pch */
+
+// 分享
+#ifdef __OBJC__
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#endif
+

@@ -1,0 +1,15 @@
+//
+//  MusicObject.h
+//  ILoveMovie
+//
+//  Created by lanou3g on 15/11/5.
+//  Copyright © 2015年 lanou3g. All rights reserved.
+//
+
+#import "AVObject.h"
+
+@interface MusicObject : AVObject
+@property (nonatomic,retain)NSString *urlString;
+@property (nonatomic,retain)NSString *musicName;
+
+@end

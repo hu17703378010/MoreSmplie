@@ -1,0 +1,317 @@
+//
+//  CategoryViewController.m
+//  ILoveMovie
+//
+//  Created by lanou3g on 15/10/28.
+//  Copyright © 2015年 lanou3g. All rights reserved.
+//
+#define kCategoryUrl @"http://apk.zdomo.com/api/apibasic?columnid=1&pageSize=20&pageNum="
+#define KW self.view.frame.size.width/375
+#define KH self.view.frame.size.height/667
+
+// 上拉刷新 下拉加载
+#import "MJRefresh.h"
+#import "MJChiBaoZiHeader.h"
+#import "MJChiBaoZiFooter.h"
+#import "MJChiBaoZiFooter2.h"
+
+#import "UIImageView+WebCache.h"
+#import "CategoryViewController.h"
+#import "CategoryTableViewCell.h"
+#import "MovieModel.h"
+
+@interface CategoryViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
+@property (nonatomic,retain)UITableView *tableView;
+@property (nonatomic,retain)UIView *categoryView;
+@property (nonatomic,retain)UIButton *categoryButton;
+@property (nonatomic,retain)NSMutableArray *dataArray;
+@property (nonatomic,retain)NSMutableArray *picArray;
+@property (nonatomic,assign)BOOL isTop;
+
+// 用于刷新
+@property (nonatomic, assign) NSInteger number;
+@property (nonatomic, assign) NSInteger tagNum;
+
+// 刷新互斥锁
+@property (nonatomic,assign)BOOL isRefreshing;
+@end
+
+
+@implementation CategoryViewController
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+    self.tabBarController.tabBar.hidden = NO;
+    [SVProgressHUD dismiss];
+}
+- (void)viewDidLoad {
+    [SVProgressHUD show];
+    [super viewDidLoad];
+    self.isRefreshing = YES;
+    self.tabBarController.tabBar.hidden = YES;
+    // self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+  //  [self setUpDataWithTag:11];
+    [self addSubViews];
+    
+    _number = 0;
+    // 下拉设置回调
+    self.tableView.header = [MJChiBaoZiHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData1)];
+    // 马上进入刷新状态
+    [self.tableView.header beginRefreshing];
+    
+    // 上拉回调
+    self.tableView.footer = [MJChiBaoZiFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData1)];
+}
+
+
+- (void)loadNewData1
+{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        _number = 0;
+       
+        [self setUpDataWithTag:_tagNum];
+        
+        // 下拉结束刷新
+        [self.tableView.header endRefreshing];
+    });
+ 
+}
+- (void)loadMoreData1
+{
+    if (self.isRefreshing == YES) {
+        self.isRefreshing = NO;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            _number++;
+            [self setUpMoreDataWithTag:_tagNum];
+                       // 下拉结束刷新
+            [self.tableView.footer endRefreshing];
+        });
+    }
+    }
+
+- (void)addSubViews
+{
+    self.isTop = YES;
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 30*KH, kScreenWidth, kScreenHeight - 165*KH) style:UITableViewStylePlain];
+    [self.tableView setSeparatorStyle:(UITableViewCellSeparatorStyleNone)];
+    self.categoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 20*KH)];
+    [self.view addSubview:self.categoryView];
+    NSArray *array = @[@"爆米花",@"正能量",@"高智商",@"大冒险",@"无厘头",@"致青春",@"心慌慌",@"爱生活",@"电视剧"];
+    for (int i = 0; i < 5; i++) {
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        [button setTitle:array[i] forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor colorWithRed:0.8 green:0.247 blue:0.314 alpha:0.580] forState:UIControlStateNormal];
+        button.titleLabel.font = [UIFont systemFontOfSize:16*KW];
+        [button addTarget:self action:@selector(actionTopButton:) forControlEvents:UIControlEventTouchUpInside];
+        button.tag = 11 + i;
+        [self.categoryView addSubview:button];
+    }
+    for (int i = 0; i < 4; i++) {
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        [button setTitle:array[i + 5] forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(actionTopButton:) forControlEvents:UIControlEventTouchUpInside];
+        button.tag = 16 + i;
+        button.titleLabel.font = [UIFont systemFontOfSize:16*KW];
+        [button setTitleColor:[UIColor colorWithRed:0.8 green:0.247 blue:0.314 alpha:0.580] forState:UIControlStateNormal];
+        [self.categoryView addSubview:button];
+    }
+    self.categoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.categoryButton.frame = CGRectMake((kScreenWidth - 40*KW) / 2, 0, 20*KW, 30*KH);
+    [self.categoryButton setBackgroundImage:[UIImage imageNamed:@"iconfont-xiala"] forState:UIControlStateNormal];
+    [self.categoryButton addTarget:self action:@selector(actionCategoryButton:) forControlEvents:UIControlEventTouchUpInside];
+    [self.categoryView addSubview:self.categoryButton];
+    [self.categoryView addGestureRecognizer:[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(actionTap:)]];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    [self.view addSubview:self.tableView];
+    [self.tableView registerNib:[UINib nibWithNibName:@"CategoryTableViewCell" bundle:nil] forCellReuseIdentifier:@"CategoryTableViewCell"];
+}
+
+- (void)categoryView1
+{
+    [UIView animateWithDuration:0.1 animations:^{
+    self.tableView.frame = CGRectMake(0, 30*KH, kScreenWidth, kScreenHeight - 30*KH);
+        
+        [self.categoryButton setImage:[UIImage imageNamed:@"city_indicate@2x"] forState:(UIControlStateNormal)];
+        self.categoryButton.frame = CGRectMake((kScreenWidth - 40*KH) / 2, 0, 20*KW, 30*KH);
+        for (int i = 0; i < 5; i++) {
+            UIButton *button = (UIButton *)[self.categoryView viewWithTag:i + 11];
+            button.frame = CGRectMake(0, 0 ,0, 0);
+        }
+        for (int i = 0; i < 4; i++) {
+            UIButton *button = (UIButton *)[self.categoryView viewWithTag:i + 16];
+            button.frame = CGRectMake(0, 0 ,0, 0);
+        }
+        self.categoryView.frame = CGRectMake(0, 0, kScreenWidth, 20*KH);
+        }];
+}
+
+- (void)categoryView2
+{
+    [UIView animateWithDuration:0.5 animations:^{
+        self.categoryView.frame = CGRectMake(0, 0, kScreenWidth, 100*KH);
+        self.categoryButton.frame = CGRectMake((kScreenWidth - 20*KW) / 2, self.categoryView.height - 20*KH, 20*KW, 30*KH);
+        self.tableView.frame = CGRectMake(10*KH, self.categoryView.bottom + 10, kScreenWidth - 20*KW, kScreenHeight - 120*KH);
+        for (int i = 0; i < 5; i++) {
+            UIButton *button = (UIButton *)[self.categoryView viewWithTag:i + 11];
+            button.frame = CGRectMake(10*KW + (i * 70*KW), 5*KH , 60*KW, 30*KH);
+        }
+        for (int i = 0; i < 4; i++) {
+            UIButton *button = (UIButton *)[self.categoryView viewWithTag:i + 16];
+            button.frame = CGRectMake(50*KW + (i * 70*KW), 35*KH , 60*KW, 30*KH);
+        }
+    }];
+}
+
+- (void)actionCategoryButton:(UIButton *)button
+{
+    if (self.isTop == YES) {
+         [self categoryView2];
+    } else {
+     
+        [self categoryView1];
+    }
+    self.isTop = !self.isTop;
+   
+}
+- (void)actionTap:(UITapGestureRecognizer *)tap
+{
+    if (self.isTop == YES) {
+        [self categoryView2];
+    } else {
+        [self categoryView1];
+    }
+    self.isTop = !self.isTop;
+}
+
+#pragma mark ---- 爆米花等的点击方法
+- (void)actionTopButton:(UIButton *)button
+{
+    [self setUpDataWithTag:button.tag];
+    [self categoryView1];
+    self.isTop = !self.isTop;
+}
+
+#pragma mark ---- tableView的代理方法
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.dataArray.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CategoryTableViewCell"forIndexPath:indexPath];
+    MovieModel *model = self.dataArray[indexPath.row];
+    [cell.categoryImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://apk.zdomo.com%@",model.PicURL]] placeholderImage:[UIImage imageNamed:@"c_placeHolder,jpg"]];
+    cell.categoryLabel.text = model.Title;
+    cell.introdiction.text = model.Introduction;
+    return cell;
+}
+
+- (void)setUpDataWithTag:(NSInteger)tag
+{
+    _tagNum = tag;
+    // 加载时等待小菊花
+    [SVProgressHUD show];
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%ld&sid=%ld",kCategoryUrl,_number,tag]];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0];
+        [request setHTTPMethod:@"GET"];
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+        NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+        NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            if (!data) {
+                [SVProgressHUD showErrorWithStatus:@"加载失败"];
+                return;
+            }
+            NSArray *array = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingMutableContainers) error:nil];
+            self.dataArray = [NSMutableArray array];
+            for (NSMutableDictionary *dic in array) {
+                MovieModel *model = [[MovieModel alloc]init];
+                [model setValuesForKeysWithDictionary:dic];
+                [self.dataArray addObject:model];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [self.tableView reloadData];
+                CATransition *animation = [CATransition animation];
+                animation.duration = 1.5;
+                animation.type = @"rippleEffect";
+                animation.subtype = kCATransitionFromTop;
+                animation.timingFunction = UIViewAnimationCurveEaseInOut;
+                [self.tableView.layer addAnimation:animation forKey:@"AppearAnimation"];
+                
+                // 加载完成,菊花消失
+                [SVProgressHUD dismiss];
+                self.isRefreshing = YES;
+            });
+        }];
+        [dataTask resume];
+    });
+}
+
+- (void)setUpMoreDataWithTag:(NSInteger)tag
+{
+    _tagNum = tag;
+    // 加载时等待小菊花
+    [SVProgressHUD show];
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%ld&sid=%ld",kCategoryUrl,_number,tag]];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0];
+        [request setHTTPMethod:@"GET"];
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+        NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+        NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            if (!data) {
+                [SVProgressHUD showErrorWithStatus:@"加载失败"];
+                return;
+            }
+            NSArray *array = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingMutableContainers) error:nil];
+            for (NSMutableDictionary *dic in array) {
+                MovieModel *model = [[MovieModel alloc]init];
+                [model setValuesForKeysWithDictionary:dic];
+                [self.dataArray addObject:model];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [self.tableView reloadData];
+                // 加载完成,菊花消失
+                [SVProgressHUD dismiss];
+                self.isRefreshing = YES;
+            });
+        }];
+        [dataTask resume];
+    });
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 230;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    MovieModel *model = self.dataArray[indexPath.row];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CATEGORY" object:@{@"model":model}];
+}
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

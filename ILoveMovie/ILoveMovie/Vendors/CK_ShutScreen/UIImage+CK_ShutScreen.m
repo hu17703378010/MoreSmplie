@@ -1,0 +1,29 @@
+//
+//  UIImage+CK_ShutScreen.m
+//  
+//
+//  Created by lanou3g on 15/10/26.
+//
+//
+
+#import "UIImage+CK_ShutScreen.h"
+
+@implementation UIImage (CK_ShutScreen)
+
++ (instancetype)captureWithView:(UIView *)view
+{
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, 0.0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+
++ (void)saveToPhotoAlbumWithImage:(UIImage *)image
+{
+    UIImageWriteToSavedPhotosAlbum(image, self, nil, nil);
+    
+}
+
+@end
